@@ -17,8 +17,10 @@ from arduino_interface import ArduinoValveController, SimulatedArduinoController
 @dataclass
 class WaterVolume:
     """Represents water allocation settings."""
-    percentage: int  # How open the valve should be (0-100%)
-    duration: int    # How long to keep open (seconds)
+    # How open the valve should be (0-100%)
+    percentage: int
+    # How long to keep open (seconds)
+    duration: int
 
     def to_tuple(self) -> Tuple[int, int]:
         return (self.percentage, self.duration)
@@ -116,7 +118,7 @@ class TappyController:
         """
         Update water volume allocation based on actual usage.
 
-        Implements the learning algorithm from pseudocode:
+        Implements the learning algorithm:
         - If user doesn't use full allocated volume, reduce future allocation
         - Uses exponential moving average (0.2 new + 0.8 old)
         - Never reduces below minimum threshold
@@ -234,7 +236,8 @@ class TappyController:
                 "estimated_volume_L": (vol.percentage / 100.0) * vol.duration * 0.5
             }
             for i, vol in enumerate(self.current_water_volume)
-            if i > 0  # Skip NONE
+            # Skip NONE
+            if i > 0
         }
 
 
@@ -261,7 +264,8 @@ def main():
     print("\n--- Running simulation demo ---\n")
 
     # Simulate some detections
-    sim_huskylens = tappy.huskylens  # type: SimulatedHuskyLens
+    # type: SimulatedHuskyLens
+    sim_huskylens = tappy.huskylens
 
     # Demo: Detect toothbrush
     print("=== Simulating: Toothbrush detected ===")
@@ -271,7 +275,8 @@ def main():
 
     # Remove toothbrush (simulates user finishing early)
     sim_huskylens.set_detected_object(ObjectID.NONE)
-    tappy.arduino.last_object_volume = 0.3  # Simulate only using 0.3L
+    # Simulate only using 0.3L
+    tappy.arduino.last_object_volume = 0.3
     tappy.run_cycle()
 
     print()
